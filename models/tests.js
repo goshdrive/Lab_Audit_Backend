@@ -1,0 +1,83 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const reagentTestSchema = new Schema({
+    key: {
+        type: String,
+    },
+    label: {
+        type: String,
+        required: true
+    },
+    reagent: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Reagent'
+    },
+    lotNr: {
+        type: String
+    }
+});
+
+const reagentDataSchema = new Schema({
+    key: {
+        type: String,
+    },
+    label: {
+        type: String,
+        required: true
+    },
+    value: {
+        type: String,
+    },
+    type: {
+        type: String,
+        requred: true
+    }
+});
+
+const otherDataSchema = new Schema({
+    key: {
+        type: String,
+    },
+    label: {
+        type: String,
+        required: true
+    },
+    value: {
+        type: String,
+    },
+    type: {
+        type: String,
+        requred: true
+    }
+});
+
+const testSchema = new Schema({
+    batchNr: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    conductedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    equipment: [{
+        type: String
+    }],    
+    assayName: {
+        type: String,
+        required: true,
+    },
+    reagents: [reagentTestSchema],
+    reagentData: [reagentDataSchema],
+    other: [otherDataSchema],
+}, {
+    timestamps: true
+});
+
+var Tests = mongoose.model('Test', testSchema);
+
+module.exports = Tests;
+

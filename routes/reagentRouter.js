@@ -1,0 +1,106 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const authenticate = require('../authenticate');
+const Reagents = require('../models/reagents')
+
+const reagentRouter = express.Router();
+
+reagentRouter.use(bodyParser.json());
+
+reagentRouter.route('/') // mounting
+.get((req,res,next) => {
+    Reagents.find({})
+    .populate('receivedBy')
+    .populate('lastEditedBy')
+    .populate('discardedBy')
+    .populate('firstUsedBy')
+    .then((reagents) => {
+        out_reagents = reagents.map(entry => {
+            let temp = {
+                lastEditedBy: entry.lastEditedBy ? (entry.lastEditedBy.lastName + ", " + entry.lastEditedBy.firstName): null,
+                firstUsedBy: entry.firstUsedBy ? (entry.firstUsedBy.lastName + ", " + entry.firstUsedBy.firstName): null,
+                receivedBy: entry.receivedBy ? (entry.receivedBy.lastName + ", " + entry.receivedBy.firstName): null,
+                discardedBy: entry.discardedBy ? (entry.discardedBy.lastName + ", " + entry.discardedBy.firstName): null,
+            }
+            return {...entry._doc, ...temp}
+        })
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(out_reagents);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
+.post(authenticate.verifyUser, (req,res,next) => {
+    req.body.receivedBy = req.user._id;
+    Reagents.create(req.body)
+    .then((reagent) => {
+        console.log('Reagent Created ', reagent);
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(reagent);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
+.put(authenticate.verifyUser, (req,res,next) => {
+    res.statusCode = 403; //operation not supported
+    res.end('PUT operation not supported on /reagents');
+})
+.delete(authenticate.verifyUser, (req,res,next) => {
+    Reagents.remove({})
+    .then((resp) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(resp);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
+
+reagentRouter.route('/:reagentId')
+//populate user ids
+.get((req,res,next) => {
+    Reagents.findById(req.params.reagentId)
+    .populate('lastEditedBy')
+    .then((reagent) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(reagent);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
+.post(authenticate.verifyUser, (req,res,next) => {
+    res.statusCode = 403;
+    res.end('POST operation not supported on /reagents/' 
+        + req.params.reagentId);
+})
+.put(authenticate.verifyUser, (req,res,next) => {
+    if (req.query.action === "editDetails") {
+        req.body.lastEditedBy = req.user._id 
+    }    
+    else if (req.query.action === "discard") {
+        req.body.discardedBy = req.user._id 
+    }
+    else if (req.query.action === "firstTest") {
+        req.body.firstUsedBy = req.user._id 
+    }
+    Reagents.findByIdAndUpdate(req.params.reagentId, {
+        $set: req.body
+    }, { new: true })
+    .then((reagent) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(reagent);
+    }, (err) => next(err))
+    .catch((err) => next(err));  
+})
+.delete(authenticate.verifyUser, (req,res,next) => {
+    Reagents.findByIdAndRemove(req.params.reagentId)
+    .then((resp) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(resp);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
+
+module.exports = reagentRouter;
