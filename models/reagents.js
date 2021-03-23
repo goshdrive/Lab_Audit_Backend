@@ -31,6 +31,10 @@ const reagentSchema = new Schema({
         type: Date,
         required: true,
     },
+    storageLocation: {
+        type: String,
+        required: true,
+    },
     assayName: {
         type: String,
         default: '',  
