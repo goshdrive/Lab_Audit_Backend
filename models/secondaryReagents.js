@@ -39,23 +39,27 @@ const secReagentSchema = new Schema({
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'  
+        ref: 'User',
+        required: true   
     },
     firstUsedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'  
+        ref: 'User',
+        default: null  
     },
     discardedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'  
+        ref: 'User',
+        default: null    
     },
-    lasteEditedBy: {
+    lastEditedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'  
+        ref: 'User',
+        default: null    
     },
     status: {
         type: String,
-        default: '',  
+        default: 'OK',  
     },
     reagents: [compositionSchema]
 }, {

@@ -31,7 +31,7 @@ const reagentDataSchema = new Schema({
     },
     type: {
         type: String,
-        requred: true
+        required: true
     }
 });
 
@@ -50,6 +50,13 @@ const otherDataSchema = new Schema({
         type: String,
         requred: true
     }
+});
+
+const equipmentSchema = new Schema({
+    eqptNr: {
+        type: String,
+        required: true
+    } 
 });
 
 const testSchema = new Schema({

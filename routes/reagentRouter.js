@@ -9,13 +9,14 @@ const reagentRouter = express.Router();
 reagentRouter.use(bodyParser.json());
 
 reagentRouter.route('/') // mounting
-.get((req,res,next) => {
+.get(authenticate.verifyUser, (req,res,next) => {
     Reagents.find({})
     .populate('receivedBy')
     .populate('lastEditedBy')
     .populate('discardedBy')
     .populate('firstUsedBy')
     .then((reagents) => {
+        reagents = reagents.filter(entry => entry.status != "DELETED");
         out_reagents = reagents.map(entry => {
             let temp = {
                 lastEditedBy: entry.lastEditedBy ? (entry.lastEditedBy.lastName + ", " + entry.lastEditedBy.firstName): null,
@@ -24,7 +25,7 @@ reagentRouter.route('/') // mounting
                 discardedBy: entry.discardedBy ? (entry.discardedBy.lastName + ", " + entry.discardedBy.firstName): null,
             }
             return {...entry._doc, ...temp}
-        })
+        });
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(out_reagents);
@@ -60,7 +61,10 @@ reagentRouter.route('/:reagentId')
 //populate user ids
 .get((req,res,next) => {
     Reagents.findById(req.params.reagentId)
+    .populate('receivedBy')
     .populate('lastEditedBy')
+    .populate('discardedBy')
+    .populate('firstUsedBy')
     .then((reagent) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');

@@ -19,8 +19,6 @@ var testTypeRouter = require('./routes/testTypeRouter');
 
 const mongoose = require('mongoose');
 
-//const Dishes = require('./models/dishes');
-
 const url = config.mongoUrl;
 const connect = mongoose.connect(url, { useNewUrlParser: true });
 
@@ -45,13 +43,12 @@ app.use(passport.initialize());
 app.use('/', index);
 app.use('/users', users);
 
-app.use(express.static(path.join(__dirname, 'public'))); // public folder can be accessed by anyone
+app.use(express.static(path.join(__dirname, 'public')));
 
-// you can leave some routes open for any user and some only for logged in users by using veryfiy User
 app.use('/reagents', reagentRouter);
-// app.use('/secondary-reagents', secReagentRouter);
-// app.use('/tests', testRouter);
-// app.use('/test-types', testTypeRouter);
+app.use('/secondary-reagents', secReagentRouter);
+app.use('/tests', testRouter);
+app.use('/test-types', testTypeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
