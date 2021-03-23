@@ -9,7 +9,6 @@ const reagentSchema = new Schema({
     reagentName: {
         type: String,
         required: true,
-        unique: true
     },
     supplier: {
         type: String,
@@ -50,6 +49,10 @@ const reagentSchema = new Schema({
     action: {
         type: String,
         default: '',  
+    },
+    dateOfFirstUse: {
+        type: Date,
+        default: null
     },
     receivedBy: {
         type: mongoose.Schema.Types.ObjectId,

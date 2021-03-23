@@ -36,10 +36,25 @@ reagentRouter.route('/') // mounting
     req.body.receivedBy = req.user._id;
     Reagents.create(req.body)
     .then((reagent) => {
-        console.log('Reagent Created ', reagent);
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(reagent);
+        Reagents.find(reagent._id)
+        .populate('receivedBy')
+        .populate('lastEditedBy')
+        .populate('discardedBy')
+        .populate('firstUsedBy')
+        .then((reagent) => {                                 
+            reagent = reagent[Object.keys(reagent)[0]];
+            console.log(reagent);
+            let temp = {
+                lastEditedBy: reagent.lastEditedBy ? (reagent.lastEditedBy.lastName + ", " + reagent.lastEditedBy.firstName): null,
+                firstUsedBy: reagent.firstUsedBy ? (reagent.firstUsedBy.lastName + ", " + reagent.firstUsedBy.firstName): null,
+                receivedBy: reagent.receivedBy ? (reagent.receivedBy.lastName + ", " + reagent.receivedBy.firstName): null,
+                discardedBy: reagent.discardedBy ? (reagent.discardedBy.lastName + ", " + reagent.discardedBy.firstName): null,
+            }
+            console.log(temp);
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({...reagent._doc, ...temp});
+        })        
     }, (err) => next(err))
     .catch((err) => next(err));
 })
@@ -90,10 +105,20 @@ reagentRouter.route('/:reagentId')
     Reagents.findByIdAndUpdate(req.params.reagentId, {
         $set: req.body
     }, { new: true })
+    .populate('receivedBy')
+    .populate('lastEditedBy')
+    .populate('discardedBy')
+    .populate('firstUsedBy')
     .then((reagent) => {
+        let temp = {
+            lastEditedBy: reagent.lastEditedBy ? (reagent.lastEditedBy.lastName + ", " + reagent.lastEditedBy.firstName): null,
+            firstUsedBy: reagent.firstUsedBy ? (reagent.firstUsedBy.lastName + ", " + reagent.firstUsedBy.firstName): null,
+            receivedBy: reagent.receivedBy ? (reagent.receivedBy.lastName + ", " + reagent.receivedBy.firstName): null,
+            discardedBy: reagent.discardedBy ? (reagent.discardedBy.lastName + ", " + reagent.discardedBy.firstName): null,
+        }
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(reagent);
+        res.json({...reagent._doc, ...temp});
     }, (err) => next(err))
     .catch((err) => next(err));  
 })
