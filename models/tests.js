@@ -70,9 +70,7 @@ const testSchema = new Schema({
         ref: 'User',
         required: true,
     },
-    equipment: [{
-        type: String
-    }],    
+    equipment: [equipmentSchema],    
     assayName: {
         type: String,
         required: true,
