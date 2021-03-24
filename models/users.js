@@ -14,11 +14,11 @@ var User = new Schema({
     // },
     firstName: {
         type: String,
-        required: true
+        default: ''
     },
     lastName: {
         type: String,
-        required: true
+        default: ''
     },
     supervisor: {
         type: Boolean,
