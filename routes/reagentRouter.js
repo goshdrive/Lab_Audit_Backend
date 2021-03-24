@@ -124,7 +124,6 @@ reagentRouter.route('/:reagentId')
         else {
             res.json(reagent);
         }
-        
     }, (err) => next(err))
     .catch((err) => next(err));  
 })
