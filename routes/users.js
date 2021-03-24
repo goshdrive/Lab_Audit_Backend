@@ -12,15 +12,6 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-// for passport we expect auth info to be in request body
-/*
-So, even with the JsonWebToken to issue the JsonWebToken, you first need to authenticate the user using one of the other strategies, 
-and if you're going to be using the local strategy first, we will authenticate the user using the username and password. 
-Once the user is authenticated with the username and password, then we will issue the token to the user saying, "Okay, you are a valid user, I'm going to give you the token". 
-All of the subsequent requests will simply carry the token in the header of the incoming request message. 
-=> BUT this time no sessions are used
-*/
-
 router.post('/signup', (req, res, next) => {
   User.register(new User({username: req.body.username}), 
   req.body.password, (err, user) => {
@@ -30,10 +21,10 @@ router.post('/signup', (req, res, next) => {
       res.json({err: err});
     }
     else {
-      if (req.body.firstname)
-        user.firstname = req.body.firstname;
-      if (req.body.firstname)
-        user.lastname = req.body.lastname;
+      if (req.body.firstName)
+        user.firstName = req.body.firstName;
+      if (req.body.firstName)
+        user.lastName = req.body.lastName;
       user.save((err, user) => {
         if (err) {
           res.statusCode = 500;
