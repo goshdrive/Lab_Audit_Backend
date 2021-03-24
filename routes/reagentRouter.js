@@ -110,15 +110,21 @@ reagentRouter.route('/:reagentId')
     .populate('discardedBy')
     .populate('firstUsedBy')
     .then((reagent) => {
-        let temp = {
-            lastEditedBy: reagent.lastEditedBy ? (reagent.lastEditedBy.lastName + ", " + reagent.lastEditedBy.firstName): null,
-            firstUsedBy: reagent.firstUsedBy ? (reagent.firstUsedBy.lastName + ", " + reagent.firstUsedBy.firstName): null,
-            receivedBy: reagent.receivedBy ? (reagent.receivedBy.lastName + ", " + reagent.receivedBy.firstName): null,
-            discardedBy: reagent.discardedBy ? (reagent.discardedBy.lastName + ", " + reagent.discardedBy.firstName): null,
-        }
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json({...reagent._doc, ...temp});
+        if (reagent !== null){
+            let temp = {
+                lastEditedBy: reagent.lastEditedBy ? (reagent.lastEditedBy.lastName + ", " + reagent.lastEditedBy.firstName): null,
+                firstUsedBy: reagent.firstUsedBy ? (reagent.firstUsedBy.lastName + ", " + reagent.firstUsedBy.firstName): null,
+                receivedBy: reagent.receivedBy ? (reagent.receivedBy.lastName + ", " + reagent.receivedBy.firstName): null,
+                discardedBy: reagent.discardedBy ? (reagent.discardedBy.lastName + ", " + reagent.discardedBy.firstName): null,
+            }
+            res.json({...reagent._doc, ...temp});
+        }
+        else {
+            res.json(reagent);
+        }
+        
     }, (err) => next(err))
     .catch((err) => next(err));  
 })
