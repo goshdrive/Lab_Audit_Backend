@@ -94,15 +94,21 @@ reagentRouter.route('/:reagentId')
 })
 .put(authenticate.verifyUser, (req,res,next) => {
     if (req.query.action === "editDetails") {
-        req.body.lastEditedBy = req.user._id 
+        req.body.lastEditedBy = req.user._id; 
+        var filter = {_id: req.params.reagentId};
     }    
     else if (req.query.action === "discard") {
-        req.body.discardedBy = req.user._id 
+        req.body.discardedBy = req.user._id;
+        var filter = {_id: req.params.reagentId};
     }
     else if (req.query.action === "firstTest") {
-        req.body.firstUsedBy = req.user._id 
+        req.body.firstUsedBy = req.user._id;
+        var filter = {_id: req.params.reagentId, "firstUsedBy": null};
     }
-    Reagents.findByIdAndUpdate(req.params.reagentId, {
+    else {
+        var filter = {_id: req.params.reagentId};
+    }
+    Reagents.findOneAndUpdate(filter, {
         $set: req.body
     }, { new: true })
     .populate('receivedBy')
