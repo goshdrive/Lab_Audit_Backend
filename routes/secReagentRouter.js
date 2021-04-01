@@ -79,16 +79,22 @@ reagentRouter.route('/:secReagentId')
 })
 .put(authenticate.verifyUser, (req,res,next) => {
     if (req.query.action === "editDetails") {
-        req.body.lastEditedBy = req.user._id 
+        req.body.lastEditedBy = req.user._id;
+        var filter = {_id: req.params.secReagentId};
     }    
     else if (req.query.action === "discard") {
         req.body.discardedBy = req.user._id;
-        req.body.status = "DISCARDED"; 
+        req.body.status = "DISPOSED"; 
+        var filter = {_id: req.params.secReagentId};
     }
     else if (req.query.action === "firstTest") {
-        req.body.firstUsedBy = req.user._id 
+        req.body.firstUsedBy = req.user._id;
+        var filter = {_id: req.params.secReagentId, "firstUsedBy": null};
     }
-    SecReagents.findByIdAndUpdate(req.params.secReagentId, {
+    else {
+        var filter = {_id: req.params.secReagentId};
+    }
+    SecReagents.findOneAndUpdate(filter, {
         $set: req.body
     }, { new: true })
     .then((secReagent) => {
