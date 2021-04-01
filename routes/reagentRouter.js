@@ -103,6 +103,7 @@ reagentRouter.route('/:reagentId')
     }
     else if (req.query.action === "firstTest") {
         req.body.firstUsedBy = req.user._id;
+        req.body.dateOfFirstUse = new Date().toISOString();
         var filter = {_id: req.params.reagentId, "firstUsedBy": null};
     }
     else {
