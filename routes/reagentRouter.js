@@ -99,6 +99,7 @@ reagentRouter.route('/:reagentId')
     }    
     else if (req.query.action === "discard") {
         req.body.discardedBy = req.user._id;
+        req.body.status = "DISCARDED";
         var filter = {_id: req.params.reagentId};
     }
     else if (req.query.action === "firstTest") {

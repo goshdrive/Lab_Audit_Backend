@@ -82,7 +82,8 @@ reagentRouter.route('/:secReagentId')
         req.body.lastEditedBy = req.user._id 
     }    
     else if (req.query.action === "discard") {
-        req.body.discardedBy = req.user._id 
+        req.body.discardedBy = req.user._id;
+        req.body.status = "DISCARDED"; 
     }
     else if (req.query.action === "firstTest") {
         req.body.firstUsedBy = req.user._id 
