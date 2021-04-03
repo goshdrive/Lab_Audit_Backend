@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authenticate = require('../authenticate');
+const cors = require('./cors');
+
 const TestTypes = require('../models/testTypes')
 
 const testTypeRouter = express.Router();
@@ -9,7 +11,8 @@ const testTypeRouter = express.Router();
 testTypeRouter.use(bodyParser.json());
 
 testTypeRouter.route('/') // mounting
-.get((req,res,next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
+.get(cors.corsWithOptions, (req,res,next) => {
     TestTypes.find({})
     .then((testTypes) => {
         res.statusCode = 200;
@@ -18,7 +21,7 @@ testTypeRouter.route('/') // mounting
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post((req,res,next) => {
+.post(cors.corsWithOptions, (req,res,next) => {
     TestTypes.create(req.body)
     .then((testType) => {
         console.log('Test Type Created ', testType);
@@ -28,11 +31,11 @@ testTypeRouter.route('/') // mounting
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put((req,res,next) => {
+.put(cors.corsWithOptions, (req,res,next) => {
     res.statusCode = 403; //operation not supported
     res.end('PUT operation not supported on /testTypes');
 })
-.delete((req,res,next) => {
+.delete(cors.corsWithOptions, (req,res,next) => {
     TestTypes.remove({})
     .then((resp) => {
         res.statusCode = 200;
@@ -43,7 +46,8 @@ testTypeRouter.route('/') // mounting
 });
 
 testTypeRouter.route('/:testTypeId')
-.get((req,res,next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
+.get(cors.corsWithOptions, (req,res,next) => {
     TestTypes.findById(req.params.testTypeId)
     .populate('conductedBy')
     .then((testType) => {
@@ -53,17 +57,17 @@ testTypeRouter.route('/:testTypeId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post((req,res,next) => {
+.post(cors.corsWithOptions, (req,res,next) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /testTypes/' 
         + req.params.testTypeId);
 })
-.put((req,res,next) => {
+.put(cors.corsWithOptions, (req,res,next) => {
     res.statusCode = 403; //operation not supported
     res.end('PUT operation not supported on /testTypes/' 
         + req.params.testTypeId);  
 })
-.delete((req,res,next) => {
+.delete(cors.corsWithOptions, (req,res,next) => {
     TestTypes.findByIdAndRemove(req.params.testTypeId)
     .then((resp) => {
         res.statusCode = 200;

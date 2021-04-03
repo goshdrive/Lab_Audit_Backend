@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authenticate = require('../authenticate');
+const cors = require('./cors');
+
 const Reagents = require('../models/reagents')
 
 const reagentRouter = express.Router();
@@ -9,7 +11,8 @@ const reagentRouter = express.Router();
 reagentRouter.use(bodyParser.json());
 
 reagentRouter.route('/') // mounting
-.get((req,res,next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
+.get(cors.corsWithOptions, (req,res,next) => {
     Reagents.find({})
     .populate('receivedBy')
     .populate('lastEditedBy')
@@ -37,7 +40,7 @@ reagentRouter.route('/') // mounting
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req,res,next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     req.body.receivedBy = req.user._id;
     Reagents.create(req.body)
     .then((reagent) => {
@@ -63,11 +66,11 @@ reagentRouter.route('/') // mounting
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put(authenticate.verifyUser, (req,res,next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     res.statusCode = 403; //operation not supported
     res.end('PUT operation not supported on /reagents');
 })
-.delete(authenticate.verifyUser, (req,res,next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     Reagents.remove({})
     .then((resp) => {
         res.statusCode = 200;
@@ -78,8 +81,8 @@ reagentRouter.route('/') // mounting
 });
 
 reagentRouter.route('/:reagentId')
-//populate user ids
-.get((req,res,next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
+.get(cors.corsWithOptions, (req,res,next) => {
     Reagents.findById(req.params.reagentId)
     .populate('receivedBy')
     .populate('lastEditedBy')
@@ -92,12 +95,12 @@ reagentRouter.route('/:reagentId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req,res,next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /reagents/' 
         + req.params.reagentId);
 })
-.put((req,res,next) => {
+.put(cors.corsWithOptions, (req,res,next) => {
     if (req.query.action === "editDetails") {
         req.body.lastEditedBy = req.user._id; 
         var filter = {_id: req.params.reagentId};
@@ -140,7 +143,7 @@ reagentRouter.route('/:reagentId')
     }, (err) => next(err))
     .catch((err) => next(err));  
 })
-.delete(authenticate.verifyUser, (req,res,next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     Reagents.findByIdAndRemove(req.params.reagentId)
     .then((resp) => {
         res.statusCode = 200;

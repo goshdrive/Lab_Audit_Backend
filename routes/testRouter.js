@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authenticate = require('../authenticate');
+const cors = require('./cors');
+
 const Tests = require('../models/tests')
 
 const testRouter = express.Router();
@@ -9,7 +11,8 @@ const testRouter = express.Router();
 testRouter.use(bodyParser.json());
 
 testRouter.route('/') // mounting
-.get((req,res,next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
+.get(cors.corsWithOptions, (req,res,next) => {
     Tests.find({})
     .populate('conductedBy')
     .then((tests) => {
@@ -25,7 +28,7 @@ testRouter.route('/') // mounting
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req,res,next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     req.body.conductedBy = req.user._id;
     Tests.create(req.body)
     .then((test) => {
@@ -36,11 +39,11 @@ testRouter.route('/') // mounting
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put(authenticate.verifyUser, (req,res,next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     res.statusCode = 403; //operation not supported
     res.end('PUT operation not supported on /tests');
 })
-.delete(authenticate.verifyUser, (req,res,next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     Tests.remove({})
     .then((resp) => {
         res.statusCode = 200;
@@ -51,8 +54,9 @@ testRouter.route('/') // mounting
 });
 
 testRouter.route('/:testId')
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
 //populate user ids
-.get(authenticate.verifyUser, (req,res,next) => {
+.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     Tests.findById(req.params.testId)
     .populate('conductedBy')
     .then((test) => {
@@ -62,17 +66,17 @@ testRouter.route('/:testId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req,res,next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /tests/' 
         + req.params.testId);
 })
-.put(authenticate.verifyUser, (req,res,next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     res.statusCode = 403; //operation not supported
     res.end('PUT operation not supported on /tests/' 
         + req.params.testId);  
 })
-.delete(authenticate.verifyUser, (req,res,next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     Tests.findByIdAndRemove(req.params.testId)
     .then((resp) => {
         res.statusCode = 200;
