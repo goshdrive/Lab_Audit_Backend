@@ -23,6 +23,10 @@ var User = new Schema({
     supervisor: {
         type: Boolean,
         default: false
+    },
+    admin: {
+        type: Boolean,
+        default: false
     }
 });
 

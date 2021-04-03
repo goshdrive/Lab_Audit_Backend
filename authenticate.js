@@ -40,11 +40,24 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
 
 exports.verifyUser = passport.authenticate('jwt', {session: false}); // jwt strategy just configered // token based auth so no sessions created
 
+exports.verifySupervisor = function(req, res, next) {
+    if (req.user.supervisor) {
+        next();
+    }
+    else {
+        err = new Error('You are not authorized to perform this operation!');
+        err.status = 403;
+        return next(err);
+    }     
+}
 
-/*
-So, for verifying a user, I will use the JWT strategy. 
-How does the JWT strategy work? 
-=> In the incoming request, the token will be included in the authentication header as we saw here. 
-We said authentication header as bearer token. 
-If that is included, then that'll be extracted and that will be used to authenticate the user based upon the token.
-*/ 
+exports.verifyAdmin = function(req, res, next) {
+    if (req.user.admin) {
+        next();
+    }
+    else {
+        err = new Error('You are not authorized to perform this operation!');
+        err.status = 403;
+        return next(err);
+    }     
+}
