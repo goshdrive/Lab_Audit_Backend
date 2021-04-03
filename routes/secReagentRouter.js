@@ -16,8 +16,11 @@ reagentRouter.route('/') // mounting
     .populate('discardedBy')
     .populate('firstUsedBy')
     .then((secReagents) => {
-        if ((req.query.deleted != "true")) {
-            secReagents = secReagents.filter(entry => entry.status != "DELETED");
+        if ((req.query.deleted == "true")) {
+            reagents = reagents.filter(entry => entry.status == "DELETED");
+        }
+        else {
+            reagents = reagents.filter(entry => entry.status != "DELETED");
         }
         out_secReagents = secReagents.map(entry => {
             let temp = {
