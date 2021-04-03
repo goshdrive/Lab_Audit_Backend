@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = requrie('cors');
+const cors = require('cors');
 const app = express();
 
 const whitelist = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:8100', 'capacitor://localhost', 'http://localhost'];
