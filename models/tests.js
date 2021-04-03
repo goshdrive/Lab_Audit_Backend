@@ -62,8 +62,7 @@ const equipmentSchema = new Schema({
 const testSchema = new Schema({
     batchNr: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     conductedBy: {
         type: mongoose.Schema.Types.ObjectId,
