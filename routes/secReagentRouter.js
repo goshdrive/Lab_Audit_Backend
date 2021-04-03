@@ -9,9 +9,9 @@ const reagentRouter = express.Router();
 reagentRouter.use(bodyParser.json());
 
 reagentRouter.route('/') // mounting
-.get(authenticate.verifyUser, (req,res,next) => {
+.get((req,res,next) => {
     SecReagents.find({})
-    .populate('receivedBy')
+    .populate('createdBy')
     .populate('lastEditedBy')
     .populate('discardedBy')
     .populate('firstUsedBy')
@@ -21,8 +21,8 @@ reagentRouter.route('/') // mounting
             let temp = {
                 lastEditedBy: entry.lastEditedBy ? (entry.lastEditedBy.lastName + ", " + entry.lastEditedBy.firstName): null,
                 createdBy: entry.createdBy ? (entry.createdBy.lastName + ", " + entry.createdBy.firstName): null,
-                receivedBy: entry.receivedBy ? (entry.receivedBy.lastName + ", " + entry.receivedBy.firstName): null,
                 discardedBy: entry.discardedBy ? (entry.discardedBy.lastName + ", " + entry.discardedBy.firstName): null,
+                firstUsedBy: entry.firstUsedBy ? (entry.firstUsedBy.lastName + ", " + entry.firstUsedBy.firstName): null,
             }
             return {...entry._doc, ...temp}
         });
@@ -43,7 +43,7 @@ reagentRouter.route('/') // mounting
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put(authenticate.verifyUser, (req,res,next) => {
+.put((req,res,next) => {
     res.statusCode = 403; //operation not supported
     res.end('PUT operation not supported on /secondary-reagents');
 })
@@ -72,12 +72,12 @@ reagentRouter.route('/:secReagentId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req,res,next) => {
+.post((req,res,next) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /secondary-reagents/' 
         + req.params.secReagentId);
 })
-.put(authenticate.verifyUser, (req,res,next) => {
+.put((req,res,next) => {
     if (req.query.action === "editDetails") {
         req.body.lastEditedBy = req.user._id;
         var filter = {_id: req.params.secReagentId};

@@ -19,7 +19,6 @@ const secReagentSchema = new Schema({
     reagentName: {
         type: String,
         required: true,
-        unique: true
     },
     lotNr: {
         type: String,

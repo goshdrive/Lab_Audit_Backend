@@ -9,7 +9,7 @@ const testRouter = express.Router();
 testRouter.use(bodyParser.json());
 
 testRouter.route('/') // mounting
-.get(authenticate.verifyUser, (req,res,next) => {
+.get((req,res,next) => {
     Tests.find({})
     .populate('conductedBy')
     .then((tests) => {

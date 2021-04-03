@@ -9,7 +9,7 @@ const reagentRouter = express.Router();
 reagentRouter.use(bodyParser.json());
 
 reagentRouter.route('/') // mounting
-.get(authenticate.verifyUser, (req,res,next) => {
+.get((req,res,next) => {
     Reagents.find({})
     .populate('receivedBy')
     .populate('lastEditedBy')
@@ -92,7 +92,7 @@ reagentRouter.route('/:reagentId')
     res.end('POST operation not supported on /reagents/' 
         + req.params.reagentId);
 })
-.put(authenticate.verifyUser, (req,res,next) => {
+.put((req,res,next) => {
     if (req.query.action === "editDetails") {
         req.body.lastEditedBy = req.user._id; 
         var filter = {_id: req.params.reagentId};
