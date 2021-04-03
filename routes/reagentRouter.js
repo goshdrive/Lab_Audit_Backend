@@ -16,7 +16,9 @@ reagentRouter.route('/') // mounting
     .populate('discardedBy')
     .populate('firstUsedBy')
     .then((reagents) => {
-        reagents = reagents.filter(entry => entry.status != "DELETED");
+        if ((req.query.deleted != "true")) {
+            reagents = reagents.filter(entry => entry.status != "DELETED");
+        }
         out_reagents = reagents.map(entry => {
             let temp = {
                 lastEditedBy: entry.lastEditedBy ? (entry.lastEditedBy.lastName + ", " + entry.lastEditedBy.firstName): null,
