@@ -12,7 +12,7 @@ reagentRouter.use(bodyParser.json());
 
 reagentRouter.route('/') // mounting
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
-.get(cors.corsWithOptions, (req,res,next) => {
+.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     Reagents.find({})
     .populate('receivedBy')
     .populate('lastEditedBy')
