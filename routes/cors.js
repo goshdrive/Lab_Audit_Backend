@@ -2,7 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-const whitelist = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:8100', 'capacitor://localhost', 'http://localhost', 'https://gentle-moss-001c37603.azurestaticapps.net/'];
+const whitelist = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:8100', 'capacitor://localhost', 
+                    'http://localhost', 'https://gentle-moss-001c37603.azurestaticapps.net/',
+                    'https://kind-water-02d950403.azurestaticapps.net/'];
 
 var corsOptionsDelegate = (req, callback) => {
     var corsOptions;
