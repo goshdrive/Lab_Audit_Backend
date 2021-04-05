@@ -19,6 +19,7 @@ testRouter.route('/') // mounting
         out_tests = tests.map(entry => {
             let temp = {
                 conductedBy: entry.conductedBy ? (entry.conductedBy.lastName + ", " + entry.conductedBy.firstName): null,
+                conductedByUsername: entry.conductedBy ? (entry.conductedBy.username): null,
             }
             return {...entry._doc, ...temp}
         });

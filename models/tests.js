@@ -77,6 +77,10 @@ const testSchema = new Schema({
     reagents: [reagentTestSchema],
     reagentData: [reagentDataSchema],
     other: [otherDataSchema],
+    status: {
+        type: Boolean,
+        default: "OK"
+    }
 }, {
     timestamps: true
 });

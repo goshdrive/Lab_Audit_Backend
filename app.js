@@ -47,6 +47,19 @@ app.use('/users', users);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+//deployment
+// app.get('/', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'))
+// })
+
+// app.get('/inventory/primary-reagents/overview', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'))
+// })
+
+// app.get('/inventory/secondary-reagents/overview', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'))
+// })
+
 app.use('/reagents', reagentRouter);
 app.use('/secondary-reagents', secReagentRouter);
 app.use('/tests', testRouter);
