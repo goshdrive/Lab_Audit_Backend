@@ -71,7 +71,6 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
 });
 
 router.post('/login', cors.corsWithOptions, (req, res, next) => {
-  
   passport.authenticate('local', (err, user, info) => {
     if (err)
       return next(err)
@@ -87,11 +86,17 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
         res.setHeader('Content-Type', 'application/json');
         res.json({success: false, status: 'Login Unsuccessful!', err: 'Could not log in user'});
       }
-  
-      var token = authenticate.getToken({_id: req.user._id}) // create token by setting id as payload  
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'application/json');
-      res.json({success: true, status: 'Login Successful!', token: token});
+      if(user.status == "DELETED") {
+        res.statusCode = 401;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success: false, status: 'User account is deactivated!', err: 'Could not log in user'});
+      } 
+      else {
+        var token = authenticate.getToken({_id: req.user._id}) // create token by setting id as payload  
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success: true, status: 'Login Successful!', token: token});
+      }
     });
   }) (req, res, next);
 });
