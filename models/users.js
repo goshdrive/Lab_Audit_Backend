@@ -12,6 +12,10 @@ var User = new Schema({
     //     type: String,
     //     required: true
     // },
+    status: {
+        type: Boolean,
+        default: 'active'
+    },
     firstName: {
         type: String,
         default: ''

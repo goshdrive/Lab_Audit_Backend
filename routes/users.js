@@ -47,8 +47,12 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
     else {
       if (req.body.firstName)
         user.firstName = req.body.firstName;
-      if (req.body.firstName)
+      if (req.body.lastName)
         user.lastName = req.body.lastName;
+      if (req.body.supervisor)
+        user.supervisor = req.body.supervisor;
+      if (req.body.admin)
+        user.admin = req.body.admin;
       user.save((err, user) => {
         if (err) {
           res.statusCode = 500;
@@ -59,7 +63,7 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
         passport.authenticate('local')(req, res, () => {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
-          res.json({success: true, status: 'Registration Successful!'});
+          res.json({success: true, status: 'Registration Successful!', user: user});
         });
       });      
     }
