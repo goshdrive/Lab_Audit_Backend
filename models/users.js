@@ -14,7 +14,7 @@ var User = new Schema({
     // },
     status: {
         type: Boolean,
-        default: 'active'
+        default: 'ACTIVE'
     },
     firstName: {
         type: String,
