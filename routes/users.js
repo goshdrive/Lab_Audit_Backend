@@ -10,8 +10,16 @@ router.use(bodyParser.json());
 
 /* GET users listing. */
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200)});
-router.get('/', cors.corsWithOptions, function(req, res, next) {
 
+router.get('/', authenticate.verifyUser, /*authenticate.verifyAdmin,*/ function(req, res, next) {
+  User.find({})
+  .then((users) => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      console.log(users);
+      res.json(users);
+  }, (err) => next(err))
+  .catch((err) => next(err));  
 });
 
 router.post('/signup', cors.corsWithOptions, (req, res, next) => {

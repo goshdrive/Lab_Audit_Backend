@@ -11,7 +11,7 @@ const testRouter = express.Router();
 testRouter.use(bodyParser.json());
 
 testRouter.route('/') // mounting
-.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
+.options(cors.corsWithOptions, authenticate.verifyUser, (req, res) => { res.sendStatus(200);})
 .get(cors.corsWithOptions, (req,res,next) => {
     Tests.find({})
     .populate('conductedBy')
@@ -73,9 +73,26 @@ testRouter.route('/:testId')
         + req.params.testId);
 })
 .put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
-    res.statusCode = 403; //operation not supported
-    res.end('PUT operation not supported on /tests/' 
-        + req.params.testId);  
+    var filter = {_id: req.params.testId};
+    Tests.findOneAndUpdate(filter, {
+        $set: req.body
+    }, { new: true })
+    .populate('conductedBy')
+    .then((test) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        if (test !== null){
+            let temp = {
+                conductedBy: test.conductedBy ? (test.conductedBy.lastName + ", " + test.conductedBy.firstName): null,
+                conductedByUsername: test.conductedBy ? (test.conductedBy.username): null,
+            }
+            res.json({...test._doc, ...temp});
+        }
+        else {
+            res.json(test);
+        }
+    }, (err) => next(err))
+    .catch((err) => next(err));  
 })
 .delete(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     Tests.findByIdAndRemove(req.params.testId)

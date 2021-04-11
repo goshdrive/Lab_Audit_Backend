@@ -78,7 +78,7 @@ const testSchema = new Schema({
     reagentData: [reagentDataSchema],
     other: [otherDataSchema],
     status: {
-        type: Boolean,
+        type: String,
         default: "OK"
     }
 }, {
