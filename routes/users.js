@@ -22,6 +22,20 @@ router.get('/', authenticate.verifyUser, /*authenticate.verifyAdmin,*/ function(
   .catch((err) => next(err));  
 });
 
+
+router.put('/:userId', cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
+  var filter = {_id: req.params.userId};
+  User.findOneAndUpdate(filter, {
+      $set: req.body
+  }, { new: true })
+  .then((user) => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json(user);
+  }, (err) => next(err))
+  .catch((err) => next(err));  
+})
+
 router.post('/signup', cors.corsWithOptions, (req, res, next) => {
   User.register(new User({username: req.body.username}), 
   req.body.password, (err, user) => {
