@@ -12,7 +12,7 @@ reagentRouter.use(bodyParser.json());
 
 reagentRouter.route('/') // mounting
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
-.get(cors.corsWithOptions, (req,res,next) => {
+.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     SecReagents.find({})
     .populate('createdBy')
     .populate('lastEditedBy')
@@ -51,7 +51,7 @@ reagentRouter.route('/') // mounting
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put(cors.corsWithOptions, (req,res,next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     res.statusCode = 403; //operation not supported
     res.end('PUT operation not supported on /secondary-reagents');
 })
@@ -68,7 +68,7 @@ reagentRouter.route('/') // mounting
 reagentRouter.route('/:secReagentId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
 //populate user ids
-.get(cors.corsWithOptions, (req,res,next) => {
+.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     SecReagents.findById(req.params.secReagentId)
     .populate('createdBy')
     .populate('lastEditedBy')
@@ -81,12 +81,12 @@ reagentRouter.route('/:secReagentId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(cors.corsWithOptions, (req,res,next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /secondary-reagents/' 
         + req.params.secReagentId);
 })
-.put(cors.corsWithOptions, (req,res,next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     if (req.query.action === "editDetails") {
         req.body.lastEditedBy = req.user._id;
         var filter = {_id: req.params.secReagentId};

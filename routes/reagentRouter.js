@@ -82,7 +82,7 @@ reagentRouter.route('/') // mounting
 
 reagentRouter.route('/:reagentId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
-.get(cors.corsWithOptions, (req,res,next) => {
+.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     Reagents.findById(req.params.reagentId)
     .populate('receivedBy')
     .populate('lastEditedBy')
@@ -100,7 +100,7 @@ reagentRouter.route('/:reagentId')
     res.end('POST operation not supported on /reagents/' 
         + req.params.reagentId);
 })
-.put(cors.corsWithOptions, (req,res,next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     if (req.query.action === "editDetails") {
         req.body.lastEditedBy = req.user._id; 
         var filter = {_id: req.params.reagentId};
