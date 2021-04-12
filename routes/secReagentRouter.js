@@ -98,6 +98,7 @@ reagentRouter.route('/:secReagentId')
     }
     else if (req.query.action === "firstTest") {
         req.body.firstUsedBy = req.user._id;
+        req.body.assayName = req.query.assayName;
         var filter = {_id: req.params.secReagentId, "firstUsedBy": null};
     }
     else {
