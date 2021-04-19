@@ -111,6 +111,7 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
         res.setHeader('Content-Type', 'application/json');
         res.json({success: true, status: 'Login Successful!', token: token, 
                     user: {
+                      _id: user._id,
                       username: user.username,
                       firstName: user.firstName,
                       lastName: user.lastName,

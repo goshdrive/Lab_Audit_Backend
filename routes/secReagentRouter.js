@@ -91,9 +91,9 @@ reagentRouter.route('/:secReagentId')
         req.body.lastEditedBy = req.user._id;
         var filter = {_id: req.params.secReagentId};
     }    
-    else if (req.query.action === "discard") {
+    else if (req.query.action === "dispose") {
         req.body.discardedBy = req.user._id;
-        req.body.status = "DISPOSED"; 
+        //req.body.status = "DISPOSED"; 
         var filter = {_id: req.params.secReagentId};
     }
     else if (req.query.action === "firstTest") {
