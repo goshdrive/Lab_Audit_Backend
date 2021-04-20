@@ -10,6 +10,10 @@ const compositionSchema = new Schema({
     lotNr: {
         type: String,
         required: true
+    },
+    reagentName: {
+        type: String,
+        required: true
     }    
 }, {
     timestamps: true
