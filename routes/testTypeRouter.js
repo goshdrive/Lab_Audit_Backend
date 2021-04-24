@@ -12,7 +12,7 @@ testTypeRouter.use(bodyParser.json());
 
 testTypeRouter.route('/') // mounting
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
-.get(cors.corsWithOptions, (req,res,next) => {
+.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     TestTypes.find({})
     .then((testTypes) => {
         res.statusCode = 200;
@@ -21,7 +21,7 @@ testTypeRouter.route('/') // mounting
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(cors.corsWithOptions, (req,res,next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifySupervisor, (req,res,next) => {
     TestTypes.create(req.body)
     .then((testType) => {
         console.log('Test Type Created ', testType);
@@ -35,7 +35,7 @@ testTypeRouter.route('/') // mounting
     res.statusCode = 403; //operation not supported
     res.end('PUT operation not supported on /testTypes');
 })
-.delete(cors.corsWithOptions, (req,res,next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifySupervisor, (req,res,next) => {
     TestTypes.remove({})
     .then((resp) => {
         res.statusCode = 200;
@@ -47,7 +47,7 @@ testTypeRouter.route('/') // mounting
 
 testTypeRouter.route('/:testTypeId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200);})
-.get(cors.corsWithOptions, (req,res,next) => {
+.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
     TestTypes.findById(req.params.testTypeId)
     .populate('conductedBy')
     .then((testType) => {
@@ -57,7 +57,7 @@ testTypeRouter.route('/:testTypeId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(cors.corsWithOptions, (req,res,next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifySupervisor, (req,res,next) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /testTypes/' 
         + req.params.testTypeId);
@@ -67,7 +67,7 @@ testTypeRouter.route('/:testTypeId')
     res.end('PUT operation not supported on /testTypes/' 
         + req.params.testTypeId);  
 })
-.delete(cors.corsWithOptions, (req,res,next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifySupervisor, (req,res,next) => {
     TestTypes.findByIdAndRemove(req.params.testTypeId)
     .then((resp) => {
         res.statusCode = 200;
