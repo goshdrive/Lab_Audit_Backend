@@ -107,6 +107,10 @@ reagentRouter.route('/:secReagentId')
     SecReagents.findOneAndUpdate(filter, {
         $set: req.body
     }, { new: true })
+    .populate('createdBy')
+    .populate('lastEditedBy')
+    .populate('discardedBy')
+    .populate('firstUsedBy')
     .then((secReagent) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
