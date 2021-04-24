@@ -114,7 +114,18 @@ reagentRouter.route('/:secReagentId')
     .then((secReagent) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(secReagent);
+        if (secReagent !== null){
+            let temp = {
+                lastEditedBy: secReagent.lastEditedBy ? (secReagent.lastEditedBy.lastName + ", " + secReagent.lastEditedBy.firstName): null,
+                firstUsedBy: secReagent.firstUsedBy ? (secReagent.firstUsedBy.lastName + ", " + secReagent.firstUsedBy.firstName): null,
+                createdBy: secReagent.createdBy ? (secReagent.createdBy.lastName + ", " + secReagent.createdBy.firstName): null,
+                discardedBy: secReagent.discardedBy ? (secReagent.discardedBy.lastName + ", " + secReagent.discardedBy.firstName): null,
+            }
+            res.json({...secReagent._doc, ...temp});
+        }
+        else {
+            res.json(secReagent);
+        }
     }, (err) => next(err))
     .catch((err) => next(err));  
 })
